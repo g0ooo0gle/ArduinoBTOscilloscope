@@ -10,7 +10,8 @@
 const int analogInPin = A0;  // 波形入力用pin
 const int LEDPin = 13; // デバッグ用LED
 int counter = 0;//ループ用カウンタ変数
-//int WAVE[512]; //波形保存用バッファ
+int counter2 = 0;//ループ用カウンタ変数
+//int WAVE[100]; //波形保存用バッファ
 
 
 
@@ -23,18 +24,26 @@ void setup() {
 }
 
 void loop() {
+  //要素数881くらいまではいけそう
+  int WAVE[100]; //バッファ1
+  int WAVE2[100]; //バッファ2
   
-  int WAVE[881]; //バッファ
+  
   
   //高速ADC_____________________________________
-  for( counter=0; counter<881; counter++ ){
+  //バッファ1
+  for( counter=0; counter<100; counter++ ){
     WAVE[counter] = analogRead(analogInPin);
   }
-  
+  //バッファ2
+  for( counter2=0; counter2<100; counter2++ ){
+    WAVE2[counter2] = analogRead(analogInPin);
+  }
   //モジュール送信_____________________________
   digitalWrite(LEDPin, HIGH);
+  //バッファ１
   int counter = 0;
-  for( counter=0; counter<881; counter++ ){
+  for( counter=0; counter<100; counter++ ){
     digitalWrite(LEDPin, HIGH);
     
     Serial.print(counter);
@@ -43,6 +52,19 @@ void loop() {
     digitalWrite(LEDPin, LOW);
     //delay(10);
   }
-    delay(10000);
+
+  //バッファ2
+  int counter2 = 0;
+  for( counter2=0; counter2<100; counter2++ ){
+    digitalWrite(LEDPin, HIGH);
+    
+    Serial.print(counter2+100);
+    Serial.print(",");
+    Serial.println(WAVE2[counter2]);
+    digitalWrite(LEDPin, LOW);
+    //delay(10);
+  }
+  
+    delay(10);
   
 }

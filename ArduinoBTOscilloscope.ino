@@ -9,9 +9,7 @@
 // 各種変数初期化
 const int analogInPin = A0;  // 波形入力用pin
 const int LEDPin = 13; // デバッグ用LED
-int counter = 0;//ループ用カウンタ変数
-int counter2 = 0;//ループ用カウンタ変数
-//int WAVE[100]; //波形保存用バッファ
+
 
 
 
@@ -20,51 +18,48 @@ void setup() {
   Serial.begin(9600);
 
   //ADC高速化関数(分周比変更)
-  setADCFrequency(ADC_DIV32);
+  //setADCFrequency(ADC_DIV32);
+
+  #ifndef cbi
+  #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
+  #endif
+  #ifndef sbi
+  #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
+  #endif
+
+  cbi(ADCSRA,ADPS2) ;
+  sbi(ADCSRA,ADPS1) ;
+  cbi(ADCSRA,ADPS0) ;
+  
 }
 
 void loop() {
   //要素数881くらいまではいけそう
-  int WAVE[100]; //バッファ1
-  int WAVE2[100]; //バッファ2
+  int WAVE[256]; //バッファ
+  unsigned long Time[256]; //サンプル時間変数
   
-  
+  unsigned int counter = 0; 
   
   //高速ADC_____________________________________
-  //バッファ1
-  for( counter=0; counter<100; counter++ ){
+  //バッファ
+  for( counter=0; counter<256; counter++ ){
+    Time[counter]=micros();
     WAVE[counter] = analogRead(analogInPin);
-  }
-  //バッファ2
-  for( counter2=0; counter2<100; counter2++ ){
-    WAVE2[counter2] = analogRead(analogInPin);
+    delayMicroseconds(2);
   }
   //モジュール送信_____________________________
   digitalWrite(LEDPin, HIGH);
-  //バッファ１
-  int counter = 0;
-  for( counter=0; counter<100; counter++ ){
+  //バッファ表示
+  unsigned int counter2 = 0; 
+  for( counter2=0; counter2<256; counter2++ ){
     digitalWrite(LEDPin, HIGH);
-    
-    Serial.print(counter);
+    Serial.print(Time[counter2]);
     Serial.print(",");
-    Serial.println(WAVE[counter]);
+    Serial.println(WAVE[counter2]);
     digitalWrite(LEDPin, LOW);
     //delay(10);
   }
-
-  //バッファ2
-  int counter2 = 0;
-  for( counter2=0; counter2<100; counter2++ ){
-    digitalWrite(LEDPin, HIGH);
-    
-    Serial.print(counter2+100);
-    Serial.print(",");
-    Serial.println(WAVE2[counter2]);
-    digitalWrite(LEDPin, LOW);
-    //delay(10);
-  }
-  
-    delay(10);
+ 
+    delay(5000);
   
 }

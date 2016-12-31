@@ -3,7 +3,7 @@
 
  */
 
-#include <Utility.h>
+//#include <Utility.h>
  
 
 // 各種変数初期化
@@ -39,7 +39,7 @@ void loop() {
   unsigned long Time[256]; //サンプル時間変数
   
   unsigned int counter = 0; 
-  
+
   //高速ADC_____________________________________
   //バッファ
   for( counter=0; counter<256; counter++ ){
@@ -48,7 +48,7 @@ void loop() {
     delayMicroseconds(2);
   }
   //モジュール送信_____________________________
-  digitalWrite(LEDPin, HIGH);
+  digitalWrite(LEDPin, LOW);
   //バッファ表示
   unsigned int counter2 = 0; 
   for( counter2=0; counter2<256; counter2++ ){
@@ -56,6 +56,7 @@ void loop() {
     Serial.print(Time[counter2]);
     Serial.print(",");
     Serial.println(WAVE[counter2]);
+    //Serial.print("#");
     digitalWrite(LEDPin, LOW);
     //delay(10);
   }

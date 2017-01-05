@@ -43,6 +43,8 @@ void setup() {
   sbi(ADCSRA,ADPS1) ;
   cbi(ADCSRA,ADPS0) ;
  */ 
+  //LED出力設定
+  pinMode(LEDPin, OUTPUT);
 }
 
 void loop() {
@@ -62,20 +64,20 @@ void loop() {
     WAVE[counter] = analogRead(analogInPin);
     delayMicroseconds(2);
   }
-  //モジュール送信_____________________________
-  digitalWrite(LEDPin, LOW);
-  //バッファ表示
+  //モジュール送信______________________________
+  //送信ループ
   unsigned int counter2 = 0; 
   for( counter2=0; counter2<256; counter2++ ){
-    digitalWrite(LEDPin, HIGH);
+    digitalWrite(LEDPin, LOW);
     Serial.print(Time[counter2]-Time[0]);//最初にサンプリングした点を0に修正
     Serial.print(",");
     Serial.println(WAVE[counter2]);
-    digitalWrite(LEDPin, LOW);
+    digitalWrite(LEDPin, HIGH);
     delay(10);
   }
     //delay(10);
     Serial.println("e");//バッファデータ終了完了。クリア命令文字"e"送信
     delay(10);
+    digitalWrite(LEDPin, HIGH);
   
 }

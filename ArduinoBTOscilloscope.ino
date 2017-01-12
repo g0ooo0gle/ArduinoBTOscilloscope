@@ -30,7 +30,7 @@ void setup() {
   Serial.begin(9600);
 
   //ADC高速化関数(分周比変更)
-  setADCFrequency(ADC_DIV32);
+  setADCFrequency(ADC_DIV4);
 /*
   #ifndef cbi
   #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
@@ -49,8 +49,8 @@ void setup() {
 
 void loop() {
   //要素数881くらいまではいけそう
-  int WAVE[256]; //バッファ
-  unsigned long Time[256]; //サンプル時間変数
+  int WAVE[128]; //バッファ
+  unsigned long Time[128]; //サンプル時間変数
   
   unsigned int counter = 0; 
   
@@ -59,7 +59,7 @@ void loop() {
   
   //高速ADC_____________________________________
   //バッファ
-  for( counter=0; counter<256; counter++ ){
+  for( counter=0; counter<128; counter++ ){
     Time[counter]=micros();
     WAVE[counter] = analogRead(analogInPin);
     delayMicroseconds(2);
@@ -67,17 +67,20 @@ void loop() {
   //モジュール送信______________________________
   //送信ループ
   unsigned int counter2 = 0; 
-  for( counter2=0; counter2<256; counter2++ ){
-    digitalWrite(LEDPin, LOW);
+  for( counter2=0; counter2<128; counter2++ ){
+    //digitalWrite(LEDPin, LOW);
     Serial.print(Time[counter2]-Time[0]);//最初にサンプリングした点を0に修正
+    delay(10);
     Serial.print(",");
+    delay(10);
     Serial.println(WAVE[counter2]);
-    digitalWrite(LEDPin, HIGH);
+    delay(10);
+    //digitalWrite(LEDPin, HIGH);
     delay(10);
   }
     //delay(10);
     Serial.println("e");//バッファデータ終了完了。クリア命令文字"e"送信
     delay(10);
-    digitalWrite(LEDPin, HIGH);
+    //digitalWrite(LEDPin, HIGH);
   
 }

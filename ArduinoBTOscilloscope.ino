@@ -71,7 +71,7 @@ void loop() {
   //送信ループ
   unsigned int counter2 = 0; 
   for( counter2=0; counter2<128; counter2++ ){
-    //digitalWrite(LEDPin, LOW);
+    digitalWrite(LEDPin, LOW);
     Serial.print(Time[counter2]-Time[0]);//最初にサンプリングした点を0に修正
     mySerial.print(Time[counter2]-Time[0]);//最初にサンプリングした点を0に修正
     delay(20);
@@ -81,7 +81,7 @@ void loop() {
     Serial.println(WAVE[counter2]);
     mySerial.println(WAVE[counter2]);
     delay(20);
-    //digitalWrite(LEDPin, HIGH);
+    digitalWrite(LEDPin, HIGH);
     delay(20);
   }
     //delay(10);
@@ -89,7 +89,8 @@ void loop() {
     mySerial.println("e");//バッファデータ終了完了。クリア命令文字"e"送信
     delay(20);
     //digitalWrite(LEDPin, HIGH);
-  //受診時の処理
+  
+  //受信時の処理（未実装）
   //if (Serial.available()) mySerial.write(Serial.read());
   
 }

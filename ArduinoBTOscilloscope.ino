@@ -19,19 +19,22 @@
    サンプリング周波数は13クロック必要。
    サンプリング：38.46153846153846kHz
 */
-#include <Utility.h>
+#include <SoftwareSerial.h>
+//#include <Utility.h>
 
+SoftwareSerial mySerial(10, 11);// RX, TX
 // 各種変数初期化
 const int analogInPin = A0;  // 波形入力用pin
 const int LEDPin = 13; // デバッグ用LED
 
 void setup() {
-  // シリアル通信開始
+  // ハードウエアシリアル開始
   Serial.begin(9600);
-
+  //ソフトウエアシリアル開始
+  mySerial.begin(9600);
   //ADC高速化関数(分周比変更)
-  setADCFrequency(ADC_DIV4);
-/*
+  //setADCFrequency(ADC_DIV4);
+
   #ifndef cbi
   #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
   #endif
@@ -42,7 +45,7 @@ void setup() {
   cbi(ADCSRA,ADPS2) ;
   sbi(ADCSRA,ADPS1) ;
   cbi(ADCSRA,ADPS0) ;
- */ 
+  
   //LED出力設定
   pinMode(LEDPin, OUTPUT);
 }
@@ -70,17 +73,23 @@ void loop() {
   for( counter2=0; counter2<128; counter2++ ){
     //digitalWrite(LEDPin, LOW);
     Serial.print(Time[counter2]-Time[0]);//最初にサンプリングした点を0に修正
-    delay(10);
+    mySerial.print(Time[counter2]-Time[0]);//最初にサンプリングした点を0に修正
+    delay(20);
     Serial.print(",");
-    delay(10);
+    mySerial.print(",");
+    delay(20);
     Serial.println(WAVE[counter2]);
-    delay(10);
+    mySerial.println(WAVE[counter2]);
+    delay(20);
     //digitalWrite(LEDPin, HIGH);
-    delay(10);
+    delay(20);
   }
     //delay(10);
     Serial.println("e");//バッファデータ終了完了。クリア命令文字"e"送信
-    delay(10);
+    mySerial.println("e");//バッファデータ終了完了。クリア命令文字"e"送信
+    delay(20);
     //digitalWrite(LEDPin, HIGH);
+  //受診時の処理
+  //if (Serial.available()) mySerial.write(Serial.read());
   
 }
